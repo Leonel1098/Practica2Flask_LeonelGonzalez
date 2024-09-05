@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Listado de Vehículos</h2>
+<a href="{{ url_for('crear_vehiculo') }}" class="btn btn-primary mb-3">Agregar Vehículo</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Precio</th>
+            <th>Disponibilidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vehiculo in vehiculos %}
+        <tr>
+            <td>{{ vehiculo.ID_Vehiculo }}</td>
+            <td>{{ vehiculo.Marca }}</td>
+            <td>{{ vehiculo.Modelo }}</td>
+            <td>{{ vehiculo.Año }}</td>
+            <td>{{ vehiculo.Precio }}</td>
+            <td>{{ 'Disponible' if vehiculo.Disponibilidad else 'Vendido' }}</td>
+            <td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

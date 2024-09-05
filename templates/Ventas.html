@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Ventas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Gestión de Ventas</h1>
+    
+    <!-- Formulario para registrar ventas -->
+    <form method="post" class="mt-3">
+        <div class="form-group">
+            <label for="ID_Vehiculo">Vehículo</label>
+            <select id="ID_Vehiculo" name="ID_Vehiculo" class="form-control" required>
+                {% for vehiculo in vehiculos %}
+                <option value="{{ vehiculo.ID_Vehiculo }}">{{ vehiculo.Marca }} - {{ vehiculo.Modelo }} ({{ vehiculo.Año }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ID_Cliente">Cliente</label>
+            <select id="ID_Cliente" name="ID_Cliente" class="form-control" required>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.ID_Cliente }}">{{ cliente.Nombre }} (ID: {{ cliente.NumeroIdentificacion }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Registrar Venta</button>
+    </form>
+
+    <!-- Tabla para mostrar el historial de ventas -->
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>ID Venta</th>
+                <th>Vehículo</th>
+                <th>Cliente</th>
+                <th>Fecha de Venta</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.ID_Venta }}</td>
+                <td>{{ venta.vehiculo.Marca }} - {{ venta.vehiculo.Modelo }} ({{ venta.vehiculo.Año }})</td>
+                <td>{{ venta.cliente.Nombre }} (ID: {{ venta.cliente.NumeroIdentificacion }})</td>
+                <td>{{ venta.Fecha_venta.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

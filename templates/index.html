@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="jumbotron">
+    <h2>Bienvenido al Sistema de Inventario de Vehículos</h2>
+    <p>Desde aquí puedes gestionar el inventario de vehículos, administrar los clientes y registrar las ventas realizadas.</p>
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <a href="{{ url_for('listar_vehiculos') }}" class="btn btn-primary btn-block">Ver Vehículos</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('manage_clientes') }}" class="btn btn-primary btn-block">Ver Clientes</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('manage_ventas') }}" class="btn btn-primary btn-block">Registrar Venta</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+CREATE DATABASE Gestion_Inventario_Vehiculos
+USE  Gestion_Inventario_Vehiculos
+
+
+CREATE TABLE Vehiculos (
+ID_Vehiculo INT PRIMARY KEY IDENTITY(1,1),
+Marca NVARCHAR(50) NOT NULL,
+Modelo NVARCHAR(50) NOT NULL,
+Año INT NOT NULL,
+Precio DECIMAL(18, 2) NOT NULL,
+Disponibilidad BIT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE Clientes (
+ID_Cliente INT PRIMARY KEY IDENTITY(1,1),
+Nombre NVARCHAR(100) NOT NULL,
+NumeroIdentificacion NVARCHAR(50) UNIQUE NOT NULL,
+Correo NVARCHAR(100) UNIQUE NOT NULL,
+Telefono NVARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Ventas (
+ID_Venta INT PRIMARY KEY IDENTITY(1,1),
+ID_Vehiculo INT NOT NULL,
+ID_Cliente INT NOT NULL,
+Fecha_venta DATETIME NOT NULL,
+CONSTRAINT FK_IDVehiculo FOREIGN KEY (ID_Vehiculo) REFERENCES Vehiculos(ID_Vehiculo),
+CONSTRAINT FK_IDCliente FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID_Cliente)
+);
+
+
+SELECT * FROM Vehiculos
