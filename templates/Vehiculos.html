@@ -5,57 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Vehículos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-<div class="container">
-    <h1 class="mt-5">Gestión de Vehículos</h1>
-    
-    <!-- Formulario para agregar vehículos -->
-    <form method="post" class="mt-3">
-        <div class="form-group">
-            <label for="Marca">Marca</label>
-            <input type="text" id="Marca" name="Marca" class="form-control" placeholder="Marca" required>
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <h1 class="card-title text-center mb-4">Gestión de Vehículos</h1>
+
+            <!-- Formulario para agregar vehículos -->
+            <form method="post">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="Marca"><i class="fas fa-car"></i> Marca</label>
+                        <input type="text" id="Marca" name="Marca" class="form-control" placeholder="Marca" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="Modelo"><i class="fas fa-cogs"></i> Modelo</label>
+                        <input type="text" id="Modelo" name="Modelo" class="form-control" placeholder="Modelo" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="Año"><i class="fas fa-calendar-alt"></i> Año</label>
+                        <input type="number" id="Año" name="Año" class="form-control" placeholder="Año" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="Precio"><i class="fas fa-dollar-sign"></i> Precio</label>
+                        <input type="number" step="0.01" id="Precio" name="Precio" class="form-control" placeholder="Precio" required>
+                    </div>
+                </div>
+
+                <!-- Botones alineados al centro -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg mr-2"><i class="fas fa-plus"></i> Agregar Vehículo</button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg"><i class="fas fa-home"></i> Regresar al Inicio</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="Modelo">Modelo</label>
-            <input type="text" id="Modelo" name="Modelo" class="form-control" placeholder="Modelo" required>
-        </div>
-        <div class="form-group">
-            <label for="Año">Año</label>
-            <input type="number" id="Año" name="Año" class="form-control" placeholder="Año" required>
-        </div>
-        <div class="form-group">
-            <label for="Precio">Precio</label>
-            <input type="number" step="0.01" id="Precio" name="Precio" class="form-control" placeholder="Precio" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Agregar Vehículo</button>
-    </form>
+    </div>
 
     <!-- Tabla para mostrar vehículos existentes -->
-    <table class="table mt-4">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Año</th>
-                <th>Precio</th>
-                <th>Disponibilidad</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for vehiculo in vehiculos %}
-            <tr>
-                <td>{{ vehiculo.ID_Vehiculo }}</td>
-                <td>{{ vehiculo.Marca }}</td>
-                <td>{{ vehiculo.Modelo }}</td>
-                <td>{{ vehiculo.Año }}</td>
-                <td>${{ vehiculo.Precio }}</td>
-                <td>{{ 'Disponible' if vehiculo.Disponibilidad else 'Vendido' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive mt-4">
+        <table class="table table-striped table-bordered text-center">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Año</th>
+                    <th>Precio</th>
+                    <th>Disponibilidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if vehiculos %}
+                    {% for vehiculo in vehiculos %}
+                    <tr>
+                        <td>{{ vehiculo.ID_Vehiculo }}</td>
+                        <td>{{ vehiculo.Marca }}</td>
+                        <td>{{ vehiculo.Modelo }}</td>
+                        <td>{{ vehiculo.Año }}</td>
+                        <td>${{ vehiculo.Precio }}</td>
+                        <td>{{ 'Disponible' if vehiculo.Disponibilidad else 'Vendido' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6">No se encontraron vehículos registrados.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

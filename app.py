@@ -1,11 +1,11 @@
-import datetime
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 # Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://Leonel:Leonel@PC-DEV14/Gestion_Inventario_Vehiculos?driver=ODBC+Driver+17+for+SQL+Server'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://Leonel:Leonel@LEONEL/Gestion_Inventario_Vehiculos?driver=ODBC+Driver+17+for+SQL+Server'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -39,11 +39,29 @@ class Venta(db.Model):
 def index():
     return render_template('index.html')
 
+#------------------------------------------------------------CRUD VEHICULOS------------------------------------------------------------
 # Leer todos los vehículos
-@app.route("/vehiculos/lista")
+@app.route('/vehiculos/lista')
 def listar_vehiculos():
-    vehiculos = Vehiculo.query.all()
+    marca = request.args.get('marca')
+    modelo = request.args.get('modelo')
+    año = request.args.get('año')
+    precio = request.args.get('precio')
+
+    query = Vehiculo.query
+
+    if marca:
+        query = query.filter(Vehiculo.Marca.ilike(f'%{marca}%'))
+    if modelo:
+        query = query.filter(Vehiculo.Modelo.ilike(f'%{modelo}%'))
+    if año:
+        query = query.filter(Vehiculo.Año == int(año))
+    if precio:
+        query = query.filter(Vehiculo.Precio == float(precio))
+
+    vehiculos = query.all()
     return render_template('ListaVehiculos.html', vehiculos=vehiculos)
+
 
 @app.route('/vehiculos', methods=['GET', 'POST'])
 def crear_vehiculo():
@@ -63,9 +81,32 @@ def crear_vehiculo():
     vehiculos = Vehiculo.query.all()
     return render_template('Vehiculos.html', vehiculos=vehiculos)
 
+@app.route('/vehiculos/eliminar/<int:vehiculo_id>', methods=['POST'])
+def eliminar_vehiculo(vehiculo_id):
+    vehiculo = Vehiculo.query.get_or_404(vehiculo_id)
+    db.session.delete(vehiculo)
+    db.session.commit()
+    return redirect(url_for('listar_vehiculos'))
+
+
+#----------------------------CRUD CLIENTES-------------------------------------------------------------------
+@app.route('/clientes/lista')
+def listar_clientes():
+    nombre = request.args.get('nombre')
+    numeroidentificacion = request.args.get('numeroidentificacion')
+
+    query = Cliente.query
+
+    if nombre:
+        query = query.filter(Cliente.Nombre.ilike(f'%{nombre}%'))
+    if numeroidentificacion:
+        query = query.filter(Cliente.NumeroIdentificacion.ilike(f'%{numeroidentificacion}%'))
+    
+    clientes = query.all()
+    return render_template('ListaClientes.html', clientes = clientes)
 
 @app.route('/clientes', methods=['GET', 'POST'])
-def manage_clientes():
+def crear_clientes():
     if request.method == 'POST':
         # Crear nuevo cliente
         new_cliente = Cliente(
@@ -76,14 +117,22 @@ def manage_clientes():
         )
         db.session.add(new_cliente)
         db.session.commit()
-        return redirect(url_for('manage_clientes'))
+        return redirect(url_for('listar_clientes'))
     
     # Leer todos los clientes
     clientes = Cliente.query.all()
     return render_template('clientes.html', clientes=clientes)
 
+@app.route('/clientes/eliminar/<int:cliente_id>', methods=['POST'])
+def eliminar_cliente(cliente_id):
+    cliente = Cliente.query.get_or_404(cliente_id)
+    db.session.delete(cliente)
+    db.session.commit()
+    return redirect(url_for('listar_clientes'))
+
+#--------------------------------VENTAS---------------------------------------------------------------------------------
 @app.route('/ventas', methods=['GET', 'POST'])
-def manage_ventas():
+def crear_ventas():
     if request.method == 'POST':
         vehiculo_id = request.form['ID_Vehiculo']
         cliente_id = request.form['ID_Cliente']
@@ -97,13 +146,30 @@ def manage_ventas():
             vehiculo.Disponibilidad = False
             db.session.add(new_venta)
             db.session.commit()
-        return redirect(url_for('manage_ventas'))
+        return redirect(url_for('crear_ventas'))
     vehiculos = Vehiculo.query.filter_by(Disponibilidad=True).all()
     clientes = Cliente.query.all()
 
     # Leer todas las ventas
     ventas = Venta.query.all()
-    return render_template('Ventas.html', vehiculos=vehiculos, clientes = clientes)
+    return render_template('Ventas.html',ventas = ventas, vehiculos=vehiculos, clientes = clientes)
+
+@app.route('/ventas/lista')
+def listar_ventas():
+    ventas = Venta.query.join(Vehiculo).join(Cliente).all()
+    return render_template('ListaVentas.html', ventas=ventas)
+
+@app.route('/ventas/eliminar/<int:venta_id>', methods=['POST'])
+def eliminar_venta(venta_id):
+    venta = Venta.query.get_or_404(venta_id)
+    vehiculo = Vehiculo.query.get(venta.ID_Vehiculo)
+    if vehiculo:
+        vehiculo.Disponibilidad = True
+        db.session.commit()
+    db.session.delete(venta)
+    db.session.commit()
+
+    return redirect(url_for('listar_ventas'))
 
 
 if __name__ == '__main__':

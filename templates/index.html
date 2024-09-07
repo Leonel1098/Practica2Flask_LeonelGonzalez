@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="jumbotron">
-    <h2>Bienvenido al Sistema de Inventario de Vehículos</h2>
-    <p>Desde aquí puedes gestionar el inventario de vehículos, administrar los clientes y registrar las ventas realizadas.</p>
-    <hr>
-    <div class="row">
-        <div class="col-md-4">
-            <a href="{{ url_for('listar_vehiculos') }}" class="btn btn-primary btn-block">Ver Vehículos</a>
+<div class="jumbotron text-center py-5">
+    <h2 class="display-4">Bienvenido al Sistema de Inventario de Vehículos</h2>
+    <p class="lead">Gestiona el inventario de vehículos, administra clientes y registra las ventas de manera eficiente.</p>
+    <hr class="my-4">
+
+    <div class="row mt-5">
+        <div class="col-md-4 mb-3">
+            <a href="{{ url_for('listar_vehiculos') }}" class="btn btn-outline-primary btn-lg btn-block">
+                <i class="fas fa-car"></i> Ver Vehículos
+            </a>
         </div>
-        <div class="col-md-4">
-            <a href="{{ url_for('manage_clientes') }}" class="btn btn-primary btn-block">Ver Clientes</a>
+        <div class="col-md-4 mb-3">
+            <a href="{{ url_for('listar_clientes') }}" class="btn btn-outline-primary btn-lg btn-block">
+                <i class="fas fa-users"></i> Ver Clientes
+            </a>
         </div>
-        <div class="col-md-4">
-            <a href="{{ url_for('manage_ventas') }}" class="btn btn-primary btn-block">Registrar Venta</a>
+        <div class="col-md-4 mb-3">
+            <a href="{{ url_for('listar_ventas') }}" class="btn btn-outline-primary btn-lg btn-block">
+                <i class="fas fa-receipt"></i> Listar Ventas
+            </a>
         </div>
     </div>
 </div>

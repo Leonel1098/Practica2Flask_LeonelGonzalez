@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Listado de Ventas</h2>
+
+<a href="{{ url_for('crear_ventas') }}" class="btn btn-primary mb-3">Agregar Venta</a>
+<a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">Regresar al Inicio</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Venta</th>
+            <th>Fecha</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Precio</th>
+            <th>Cliente</th>
+            <th>Número de Identificación</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if ventas %}
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.ID_Venta }}</td>
+                <td>{{ venta.Fecha_venta.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ venta.vehiculo.Marca }}</td>
+                <td>{{ venta.vehiculo.Modelo }}</td>
+                <td>{{ venta.vehiculo.Año }}</td>
+                <td>{{ venta.vehiculo.Precio }}</td>
+                <td>{{ venta.cliente.Nombre }}</td>
+                <td>{{ venta.cliente.NumeroIdentificacion }}</td>
+                <td>{{ venta.cliente.Correo }}</td>
+                <td>{{ venta.cliente.Telefono }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('eliminar_venta', venta_id=venta.ID_Venta) }}" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que quieres cancelar esta venta?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Cancelar Venta</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="11">No se encontraron ventas.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

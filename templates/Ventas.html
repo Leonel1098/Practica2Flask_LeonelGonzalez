@@ -4,54 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Ventas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <!-- Estilos para mejorar el diseno del fondo  -->
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .btn-primary {
+            background-color: #2980b9;
+            border: none;
+            border-radius: 20px;
+        }
+        .btn-secondary {
+            background-color: #7f8c8d;
+            border: none;
+            border-radius: 20px;
+        }
+        .table {
+            margin-top: 20px;
+        }
+        .table thead {
+            background-color: #34495e;
+            color: white;
+        }
+        .table tbody tr {
+            background-color: #ecf0f1;
+        }
+        .form-group label {
+            font-weight: 500;
+            color: #34495e;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1 class="mt-5">Gestión de Ventas</h1>
-    
+    <h1 class="text-center">Gestión de Ventas</h1>
+
     <!-- Formulario para registrar ventas -->
-    <form method="post" class="mt-3">
-        <div class="form-group">
-            <label for="ID_Vehiculo">Vehículo</label>
-            <select id="ID_Vehiculo" name="ID_Vehiculo" class="form-control" required>
-                {% for vehiculo in vehiculos %}
-                <option value="{{ vehiculo.ID_Vehiculo }}">{{ vehiculo.Marca }} - {{ vehiculo.Modelo }} ({{ vehiculo.Año }})</option>
-                {% endfor %}
-            </select>
+    <div class="card shadow-lg mt-4">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Registrar Venta</h2>
+            <form method="post">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="ID_Vehiculo"><i class="fas fa-car"></i> Vehículo</label>
+                        <select id="ID_Vehiculo" name="ID_Vehiculo" class="form-control" required>
+                            {% for vehiculo in vehiculos %}
+                            <option value="{{ vehiculo.ID_Vehiculo }}">{{ vehiculo.Marca }} - {{ vehiculo.Modelo }} ({{ vehiculo.Año }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ID_Cliente"><i class="fas fa-user"></i> Cliente</label>
+                        <select id="ID_Cliente" name="ID_Cliente" class="form-control" required>
+                            {% for cliente in clientes %}
+                            <option value="{{ cliente.ID_Cliente }}">{{ cliente.Nombre }} (ID: {{ cliente.NumeroIdentificacion }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Botones alineados al centro -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg mr-2"><i class="fas fa-plus"></i> Registrar Venta</button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg"><i class="fas fa-home"></i> Regresar al Inicio</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="ID_Cliente">Cliente</label>
-            <select id="ID_Cliente" name="ID_Cliente" class="form-control" required>
-                {% for cliente in clientes %}
-                <option value="{{ cliente.ID_Cliente }}">{{ cliente.Nombre }} (ID: {{ cliente.NumeroIdentificacion }})</option>
-                {% endfor %}
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Registrar Venta</button>
-    </form>
+    </div>
 
     <!-- Tabla para mostrar el historial de ventas -->
-    <table class="table mt-4">
-        <thead>
-            <tr>
-                <th>ID Venta</th>
-                <th>Vehículo</th>
-                <th>Cliente</th>
-                <th>Fecha de Venta</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for venta in ventas %}
-            <tr>
-                <td>{{ venta.ID_Venta }}</td>
-                <td>{{ venta.vehiculo.Marca }} - {{ venta.vehiculo.Modelo }} ({{ venta.vehiculo.Año }})</td>
-                <td>{{ venta.cliente.Nombre }} (ID: {{ venta.cliente.NumeroIdentificacion }})</td>
-                <td>{{ venta.Fecha_venta.strftime('%d/%m/%Y %H:%M:%S') }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive mt-5">
+        <h2 class="text-center mb-4">Historial de Ventas</h2>
+        <table class="table table-striped table-bordered text-center">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID Venta</th>
+                    <th>Vehículo</th>
+                    <th>Cliente</th>
+                    <th>Fecha de Venta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if ventas %}
+                    {% for venta in ventas %}
+                    <tr>
+                        <td>{{ venta.ID_Venta }}</td>
+                        <td>{{ venta.vehiculo.Marca }} - {{ venta.vehiculo.Modelo }} ({{ venta.vehiculo.Año }})</td>
+                        <td>{{ venta.cliente.Nombre }} (ID: {{ venta.cliente.NumeroIdentificacion }})</td>
+                        <td>{{ venta.Fecha_venta.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">No se encontraron ventas registradas.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -59,4 +125,3 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-

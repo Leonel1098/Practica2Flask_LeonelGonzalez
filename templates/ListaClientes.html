@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Listado de Clientes</h2>
+
+<!-- Formulario de filtro -->
+<form method="get" action="{{ url_for('listar_clientes') }}" class="mb-3">
+    <div class="row">
+        <div class="col-md-3">
+            <input type="text" name="nombre" class="form-control" value="{{ filtro_nombre if filtro_nombre is not none else '' }}" placeholder="Nombre" value="{{ request.args.get('nombre') }}">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="numeroidentificacion" class="form-control" value="{{ filtro_nombre if filtro_nombre is not none else '' }}" placeholder="NumeroIdentificacion" value="{{ request.args.get('numeroidentificacion') }}">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<a href="{{ url_for('crear_clientes') }}" class="btn btn-primary mb-3">Agregar Cliente</a>
+<a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">Regresar al Inicio</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>NumeroIdentificacion</th>
+            <th>Correo</th>
+            <th>Telefono</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if clientes %}
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.ID_Cliente }}</td>
+                <td>{{ cliente.Nombre }}</td>
+                <td>{{ cliente.NumeroIdentificacion }}</td>
+                <td>{{ cliente.Correo }}</td>
+                <td>{{ cliente.Telefono }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('eliminar_cliente', cliente_id=cliente.ID_Cliente) }}" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este cliente?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">No se encontraron clientes.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,7 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Listado de Vehículos</h2>
-<a href="{{ url_for('crear_vehiculo') }}" class="btn btn-primary mb-3">Agregar Vehículo</a>
+
+<!-- Formulario de filtro -->
+<form method="get" action="{{ url_for('listar_vehiculos') }}" class="mb-3">
+    <div class="row">
+        <div class="col-md-3">
+            <input type="text" name="marca" class="form-control" value="{{ filtro_marca if filtro_marca is not none else '' }}" placeholder="Marca" value="{{ request.args.get('marca') }}">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="modelo" class="form-control" value="{{ filtro_marca if filtro_marca is not none else '' }}"placeholder="Modelo" value="{{ request.args.get('modelo') }}">
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="año" class="form-control" placeholder="Año" value="{{ request.args.get('año') }}">
+        </div>
+        <div class="col-md-2">
+            <input type="number" step="0.01" name="precio" class="form-control" placeholder="Precio" value="{{ request.args.get('precio') }}">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<!-- Botones alineados -->
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ url_for('crear_vehiculo') }}" class="btn btn-primary">Agregar Vehículo</a>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Regresar al Inicio</a>
+</div>
+
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -15,17 +42,27 @@
         </tr>
     </thead>
     <tbody>
-        {% for vehiculo in vehiculos %}
-        <tr>
-            <td>{{ vehiculo.ID_Vehiculo }}</td>
-            <td>{{ vehiculo.Marca }}</td>
-            <td>{{ vehiculo.Modelo }}</td>
-            <td>{{ vehiculo.Año }}</td>
-            <td>{{ vehiculo.Precio }}</td>
-            <td>{{ 'Disponible' if vehiculo.Disponibilidad else 'Vendido' }}</td>
-            <td>
-        </tr>
-        {% endfor %}
+        {% if vehiculos %}
+            {% for vehiculo in vehiculos %}
+            <tr>
+                <td>{{ vehiculo.ID_Vehiculo }}</td>
+                <td>{{ vehiculo.Marca }}</td>
+                <td>{{ vehiculo.Modelo }}</td>
+                <td>{{ vehiculo.Año }}</td>
+                <td>{{ vehiculo.Precio }}</td>
+                <td>{{ 'Disponible' if vehiculo.Disponibilidad else 'Vendido' }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('eliminar_vehiculo', vehiculo_id=vehiculo.ID_Vehiculo) }}" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este vehículo?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">No se encontraron vehículos.</td>
+            </tr>
+        {% endif %}
     </tbody>
 </table>
 {% endblock %}
